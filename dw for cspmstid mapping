@@ -1,0 +1,95 @@
+[{
+    "cspmstid": 123,
+    "cspcode": "NECE",
+    "parentcspcode" : "NIPEX",
+    "parentcspcodeID" : ""
+},
+{
+    "cspmstid": 301,
+    "cspcode": "NECE",
+    "parentcspcode" : "NIPEX",
+    "parentcspcodeID" : ""
+},
+{
+    "cspmstid": 789,
+    "cspcode": "NIPEX",
+    "parentcspcode" : "",
+    "parentcspcodeID" : ""
+},
+{
+    "cspmstid": 789,
+    "cspcode": "NIPEX",
+    "parentcspcode" : "",
+    "parentcspcodeID" : ""
+},
+{
+    "cspmstid": 456,
+    "cspcode": "NIPPO",
+    "parentcspcode" : "CASA",
+    "parentcspcodeID" : ""
+},
+{
+    "cspmstid": 101,
+    "cspcode": "CASA",
+    "parentcspcode" : "",
+    "parentcspcodeID" : ""
+}]
+
+
+-----------------
+
+
+%dw 2.0
+output application/json
+var parentcspcode = payload map(value,index) -> value.parentcspcode
+var codeidmapping = payload map(value3,index3) -> value3.cspcode ++ "-" ++ value3.cspmstid
+---
+(payload map(value1,index1)-> value1) map(value2,index2) -> 
+if (parentcspcode contains value2.cspcode) value2 else 
+(value2) mapObject(value4,key4,index4) ->
+if (key4 ~= "cspmstid")
+(key4) : (((codeidmapping filter ($ contains value2.parentcspcode))[0]) splitBy "-")[1] as Number
+else
+(key4) : value4
+
+
+------------------
+
+[
+  {
+    "cspmstid": 789,
+    "cspcode": "NECE",
+    "parentcspcode": "NIPEX",
+    "parentcspcodeID": ""
+  },
+  {
+    "cspmstid": 789,
+    "cspcode": "NECE",
+    "parentcspcode": "NIPEX",
+    "parentcspcodeID": ""
+  },
+  {
+    "cspmstid": 789,
+    "cspcode": "NIPEX",
+    "parentcspcode": "",
+    "parentcspcodeID": ""
+  },
+  {
+    "cspmstid": 789,
+    "cspcode": "NIPEX",
+    "parentcspcode": "",
+    "parentcspcodeID": ""
+  },
+  {
+    "cspmstid": 101,
+    "cspcode": "NIPPO",
+    "parentcspcode": "CASA",
+    "parentcspcodeID": ""
+  },
+  {
+    "cspmstid": 101,
+    "cspcode": "CASA",
+    "parentcspcode": "",
+    "parentcspcodeID": ""
+  }
+]
